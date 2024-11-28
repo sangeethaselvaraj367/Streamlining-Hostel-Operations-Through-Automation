@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 15%;
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .sidebar button:hover {
+            background-color: #0056b3;
+        }
+
+        .main-content {
+            width: 85%;
+            padding: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: block;
+            margin: 20px auto;
+            width: 300px;
+            height: auto;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        form label,
+        form input,
+        form button {
+            width: 100%;
+        }
+
+        form label {
+            font-weight: bold;
+        }
+
+        form input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+        form button {
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        .content-section {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            text-align: center;
+        }
+
+        .content-section img {
+            width: 80%;
+            border-radius: 10px;
+        }
+
+        .bottom-section {
+            padding: 20px;
+            background-color: #ffffff;
+            border-top: 1px solid #ced4da;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-bar {
+            background-color: #007bff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .menu-bar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .menu-bar a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar" style="text-align: center;">
+        <button onclick="showAboutHostel()">About the Hostel</button>
+        <button onclick="showWardenDetails()">Warden Details</button>
+        <button onclick="showFacilities()">Facilities</button>
+        <button onclick="showRules()">Rules</button>
+        <button onclick="showContactInfo()">Contact Information</button>
+    </div>
+
+    <div class="main-content">
+        <div class="menu-bar">
+            <div style="text-align: center;">Hostel Management</div>
+            <div style="text-align: center;">
+                <a href="javascript:void(0)" onclick="showLoginForm()">Login</a>
+                <div id="dateTime" style="text-align: center;"></div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <img src="krct lo.png" alt="College Logo" class="logo" width="500" height="100">
+        </div>
+        <div id="mainContent" class="content-section" style="text-align: center;">
+            <h1>Welcome to Our Hostel</h1>
+            <p>Our hostel provides a safe and comfortable environment for students. We offer amenities such as Wi-Fi, laundry services, and common areas for socializing and studying.</p>
+            <div style="text-align: center;">
+                <img src="img.jpg" alt="Hostel Photo" width="400" height="400"/>
+            </div>
+            <p>Our friendly staff is always available to assist with any needs you may have.</p>
+        </div>
+        <div class="bottom-section">
+            <h3>About Our Hostel</h3>
+            <p><strong>Floors:</strong></p>
+            <p>Our hostel consists of 3 floors, each equipped with state-of-the-art facilities. Each floor features kitchens, study rooms, and lounges.</p>
+            <p><strong>Wardens:</strong></p>
+            <p>Each floor is managed by a dedicated warden who ensures a safe and supportive environment for all students. Wardens are approachable and ready to assist students with any concerns they may have.</p>
+        </div>
+    </div>
+
+    <script>
+        function showLoginForm() {
+            var mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <div class="content-section" >
+                    <h1>Login Portal</h1>
+                    
+                    <form id="loginForm">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                        <button type="submit">Login</button>
+                    </form>
+                    <h3><a href="forgot-password.html">Forgot Password?</a></h3>
+                    <h2><a href="new.html">Create New Account</a></h2>
+                </div>
+            `;
+
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', handleLogin);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginUrl = 'https://your-api-url.com/login';
+
+            fetch(loginUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Login failed');
+                    }
+                })
+                .then(data => {
+                    alert('Login successful!');
+                    window.location.href = 'user-page.html';
+                })
+                .catch(error => {
+                    alert('Login failed. Check your username and password.');
+                    console.error(error);
+                });
+        }
+
+        function updateDateTime() {
+            const dateTimeElement = document.getElementById('dateTime');
+            const now = new Date();
+            const dateStr = now.toLocaleDateString();
+            const timeStr = now.toLocaleTimeString();
+            dateTimeElement.textContent = `${dateStr}, ${timeStr}`;
+        }
+
+        setInterval(updateDateTime, 1000);
+        window.onload = function() {
+            updateDateTime();
+        };
+
+        function showAboutHostel() {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content-section">
+                    <h2>About the Hostel</h2>
+                    <p>Our hostel offers comfortable living conditions for students, equipped with modern facilities such as Wi-Fi, laundry services, study rooms, and communal spaces.</p>
+                    <p>The hostel provides 3 floors with a range of amenities, including kitchens, lounges, and common areas.</p>
+                    <p>The hostel staff is dedicated to ensuring a safe and supportive environment for all students.</p>
+                </div>
+            `;
+        }
+
+        function showWardenDetails() {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content-section">
+                    <h2>Warden Details</h2>
+                    <p>Our hostel is managed by dedicated wardens who are responsible for maintaining a safe and secure environment for all students:</p>
+                    <ul>
+                        <li><strong>Warden 1:</strong> Mrs.Devi</li>
+                        <li><strong>Warden 2:</strong> Mrs.Kavitha</li>
+                        <li><strong>Warden 3:</strong> Mrs.Jenifer</li>
+                    </ul>
+                    <p>Wardens are available to assist students with any issues or concerns they may have.</p>
+                </div>
+            `;
+        }
+
+        function showFacilities() {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content-section">
+                    <h2>Facilities</h2>
+                    <p>Our hostel offers a wide range of facilities to make students' stay comfortable and productive:</p>
+                    <ul>
+                        <li>High-speed Wi-Fi connectivity</li>
+                        <li>Well-equipped study rooms and common areas</li>
+                        <li>Secure and safe environment</li>
+                        <li>Fully-equipped kitchens on each floor</li>
+                        <li>Laundry services</li>
+                        <li>Gym and sports facilities</li>
+                        <li>Regular maintenance and cleaning</li>
+                    </ul>
+                    <p>Our goal is to provide a supportive and inclusive environment for all students.</p>
+                </div>
+            `;
+        }
+
+        function showRules() {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content-section">
+                    <h2>Rules</h2>
+                    <p>To maintain a safe and respectful environment, the following rules must be followed by all hostel residents:</p>
+                    <ul>
+                        <li>Respect quiet hours from 10 PM to 8 AM.</li>
+                        <li>No visitors allowed in student rooms.</li>
+                        <li>Keep common areas clean and tidy.</li>
+                        <li>Prohibited substances and behavior are not allowed.</li>
+                        <li>Emergency exits must be kept clear at all times.</li>
+                    </ul>
+                    <p>Failure to comply with the rules may result in disciplinary action.</p>
+                </div>
+            `;
+        }
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Check username and password
+            if (username === 'jay26' && password === '260105') {
+                alert('Login successful!');
+                window.location.href = 'user-page.html'; // Redirect to user page
+            } else {
+                alert('Incorrect username or password. Please try again.');
+            }
+        }
+
+        function showContactInfo() {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content-section">
+                    <h2>Contact Information</h2>
+                    <p>If you have any questions or need assistance, please don't hesitate to contact us:</p>
+                    <ul>
+                        <li><strong>Email:</strong> krcthostel.support@gnet.com</li>
+                        <li><strong>Phone:</strong> +91 9756263410</li>
+                        <li><strong>Office Hours:</strong> Monday to Friday, 9 AM to 5 PM</li>
+                    </ul>
+                    <p>Our team is here to help you. Please reach out to us with any concerns or questions.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>

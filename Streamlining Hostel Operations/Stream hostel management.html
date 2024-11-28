@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="password"],
+        input[type="date"] {
+            width:100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="loginContainer" style="text-align: center;">
+        <h1>Admin Login</h1>
+        <label for="password">Enter Password:</label>
+        <input type="password" id="password">
+        <button onclick="authenticate()">Login</button>
+    </div>
+
+    <div class="container" id="adminPage" style="display: none;">
+        <div id="attendanceSection">
+            <h1>Attendance Data</h1>
+            <div>
+                <label for="searchDate">Enter Date to Check Attendance:</label>
+                <input type="date" id="searchDate">
+                <button onclick="checkAttendance()">Check</button>
+            </div>
+            <table id="attendanceTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Roll No</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Attendance data will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="cleaningSection">
+            <h1>Cleaning Requests</h1>
+            <table id="cleaningRequestsTable">
+                <thead>
+                    <tr>
+                        <th>Room Number</th>
+                        <th>Roll Number</th>
+                        <th>Student Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cleaningRequestsBody">
+                    <!-- Cleaning requests will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Function to authenticate admin
+        function authenticate() {
+            const password = document.getElementById("password").value;
+            // Check if password is correct
+            if (password === "its_admin") {
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("adminPage").style.display = "block";
+                displayCleaningRequests(); // Display cleaning requests when logged in
+            } else {
+                alert("Incorrect password. Please try again.");
+            }
+        }
+
+        function populateTableForDate(date) {
+            const tableBody = document.querySelector("#attendanceTable tbody");
+            tableBody.innerHTML = ""; // Clear existing rows
+            const attendanceData = JSON.parse(localStorage.getItem("attendanceData")) || [];
+            const filteredData = attendanceData.filter(data => data.date === date);
+            if (filteredData.length === 0) {
+                alert("No attendance found for the selected date.");
+                return;
+            }
+            filteredData.forEach((data, index) => {
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+                const cell5 = row.insertCell(4);
+                const cell6 = row.insertCell(5);
+                cell1.textContent = data.name;
+                cell2.textContent = data.rollNo;
+                cell3.textContent = data.date;
+                cell4.textContent = data.status;
+                cell5.textContent = data.remarks;
+                cell6.innerHTML = '<button onclick="deleteAttendance(' + index + ')">Delete</button>';
+            });
+            document.getElementById("attendanceTable").style.display = "table";
+        }
+
+        function checkAttendance() {
+            const searchDate = document.getElementById("searchDate").value;
+            if (!searchDate) {
+                alert("Please select a date.");
+                return;
+            }
+            populateTableForDate(searchDate);
+        }
+
+        function deleteAttendance(index) {
+            const attendanceData = JSON.parse(localStorage.getItem("attendanceData")) || [];
+            attendanceData.splice(index, 1);
+            localStorage.setItem("attendanceData", JSON.stringify(attendanceData));
+            document.getElementById("searchDate").value = "";
+            document.getElementById("attendanceTable").style.display = "none";
+        }
+
+        function displayCleaningRequests() {
+            const cleaningRequests = JSON.parse(localStorage.getItem("cleaningRequests")) || [];
+            const cleaningRequestsBody = document.getElementById("cleaningRequestsBody");
+            cleaningRequestsBody.innerHTML = ""; // Clear existing rows
+            cleaningRequests.forEach((request, index) => {
+                const row = cleaningRequestsBody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+                cell1.textContent = request.roomNumber;
+                cell2.textContent = request.rollNumber;
+                cell3.textContent = request.studentName;
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.onclick = function() {
+                    deleteCleaningRequest(index);
+                };
+                cell4.appendChild(deleteButton);
+            });
+        }
+
+        function deleteCleaningRequest(index) {
+            const cleaningRequests = JSON.parse(localStorage.getItem("cleaningRequests")) || [];
+            cleaningRequests.splice(index, 1);
+            localStorage.setItem("cleaningRequests", JSON.stringify(cleaningRequests));
+            displayCleaningRequests();
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            displayCleaningRequests();
+        });
+    </script>
+</body>
+
+</html>

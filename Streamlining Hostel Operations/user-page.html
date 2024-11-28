@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management App</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Navbar styling */
+        .navbar {
+            background-color: #343a40;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        /* User details */
+        .user-details {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Human icon as user photo */
+        .user-details i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        /* Functionality bar styling */
+        .functionality-bar {
+            margin-top: 60px; /* Margin to account for the fixed navbar */
+            display: flex;
+            justify-content: space-evenly;
+            padding: 10px;
+            background-color: #f1f3f5;
+            border-bottom: 1px solid #ced4da;
+        }
+
+        .functionality-bar button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .functionality-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Main content area */
+        .container {
+            margin-top: 80px;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            text-align: center;
+            margin: auto;
+        }
+
+        /* Forms styling */
+        h2 {
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: left;
+            display: none;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #calendar {
+            width: 100%;
+            height: 500px;
+            margin: 20px 0;
+            display: none;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+
+        #availabilityResult {
+            color: #495057;
+            margin-top: 20px;
+        }
+
+        /* Carousel styles */
+        .owl-carousel .item {
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+        /* Owl carousel controls */
+        .owl-carousel .owl-prev,
+        .owl-carousel .owl-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .owl-carousel .owl-prev {
+            left: -30px;
+        }
+
+        .owl-carousel .owl-next {
+            right: -30px;
+        }
+
+        .owl-carousel .owl-prev:hover,
+        .owl-carousel .owl-next:hover {
+            background-color: #0056b3;
+        }
+
+        /* Alert styling */
+        #alert {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="alert" style="display: none;"></div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1>KRCT Official Hostel Management Portal</h1>
+        <div class="user-details">
+            <!-- Human icon for user photo -->
+            <i class="fas fa-user-circle"></i>
+            <span>Welcome, User!</span>
+        </div>
+    </nav>
+
+    <!-- Functionality bar -->
+    <div class="functionality-bar">
+        <button type="button" onclick="toggleCalendar()">Show Calendar</button>
+        <button type="button" onclick="toggleForm('foodRatingForm')">Rate the Mess Food</button>
+        <button type="button" onclick="toggleForm('availabilityForm')">Check Room Availability</button>
+        <button type="button" onclick="toggleForm('menuForm')">Check Menu</button>
+        <button type="button" onclick="toggleForm('feePortalForm')">Check Fees</button>
+        <button type="button" onclick="toggleForm('billingForm')">Check Billing & Fee Reminder</button>
+        <button type="button" onclick="toggleForm('leaveForm')">Submit Leave</button>
+        <button type="button" onclick="toggleForm('attendanceForm')">Mark Attendance</button>
+        <button type="button" onclick="toggleForm('cleaningRequestForm')">Submit Room Cleaning Request</button>
+    </div>
+
+    <!-- Main content area -->
+    <div class="container">
+        <!-- Carousel for initial images -->
+        <div class="owl-carousel owl-theme" id="carousel">
+            <div class="item"><img src="img.jpg" alt="Image 1"></div>
+            <div class="item"><img src="img1.jpg" alt="Image 2"></div>
+            <div class="item"><img src="img2.jpg" alt="Image 3"></div>
+            <div class="item"><img src="img3.jpg" alt="Image 4"></div>
+        </div>
+
+        <!-- Calendar -->
+        <div id="calendar"></div>
+
+        <!-- Food rating form -->
+        <form id="foodRatingForm">
+            <h2>Rate the Mess Food</h2>
+
+            <label for="ratingDate">Date:</label>
+            <input type="date" id="ratingDate" name="ratingDate" required>
+
+            <label for="foodRating">Rate the food (1-5):</label>
+            <input type="number" id="foodRating" name="foodRating" min="1" max="5" required>
+
+            <label for="comments">Comments:</label>
+            <textarea id="comments" name="comments" rows="4" cols="50"></textarea>
+
+            <button type="button" onclick="submitFoodRating()">Submit Rating</button>
+        </form>
+
+        <!-- Availability form -->
+        <form id="availabilityForm">
+            <h2>Check Room Availability</h2>
+            <label for="checkInDate">Check-in Date:</label>
+            <input type="date" id="checkInDate" name="checkInDate" required>
+
+            <label for="checkOutDate">Check-out Date:</label>
+            <input type="date" id="checkOutDate" name="checkOutDate" required>
+
+            <button type="button" onclick="checkRoomAvailability()">Check Availability</button>
+        </form>
+
+        <!-- Menu form -->
+        <form id="menuForm">
+            <h2>Check Menu</h2>
+            <label for="menuDate">Select Date:</label>
+            <input type="date" id="menuDate" name="menuDate" required>
+
+            <button type="button" onclick="checkMenu()">Check Menu</button>
+        </form>
+
+        <!-- Fee Portal form -->
+        <form id="feePortalForm">
+            <h2>Check Fees</h2>
+            <button type="button" onclick="checkFees()">Check Fees</button>
+        </form>
+
+        <!-- Billing & Fee Reminder form -->
+        <form id="billingForm">
+            <h2>Billing & Fee Reminder</h2>
+            <button type="button" onclick="checkBilling()">Check Billing & Fee Reminder</button>
+        </form>
+
+        <!-- Room Cleaning Request Form -->
+<form id="cleaningRequestForm" style="position: relative;">
+    <h2>Submit Room Cleaning Request</h2>
+    <label for="roomNumber">Room Number:</label>
+    <input type="text" id="roomNumber" name="roomNumber" required>
+
+    <label for="rollNumber">Roll Number:</label>
+    <input type="text" id="rollNumber" name="rollNumber" required>
+
+    <label for="studentName">Student Name:</label>
+    <input type="text" id="studentName" name="studentName" required>
+
+    <button type="button" onclick="submitCleaningRequest()">Submit Request</button>
+    <div id="alert" style="display: none; margin-top: 10px; text-align: center;"></div>
+</form>
+
+        <!-- Leave form -->
+        <form id="leaveForm">
+            <h2>Submit Leave</h2>
+            <label for="leaveStart">Leave Start Date:</label>
+            <input type="date" id="leaveStart" name="leaveStart" required>
+
+            <label for="leaveEnd">Leave End Date:</label>
+            <input type="date" id="leaveEnd" name="leaveEnd" required>
+
+            <button type="button" onclick="submitLeave()">Submit Leave</button>
+
+            <h2>Delete Leave</h2>
+            <label for="deleteLeaveStart">Leave Start Date:</label>
+            <input type="date" id="deleteLeaveStart" name="deleteLeaveStart" required>
+
+            <label for="deleteLeaveEnd">Leave End Date:</label>
+            <input type="date" id="deleteLeaveEnd" name="deleteLeaveEnd" required>
+
+            <button type="button" onclick="deleteLeave()">Delete Leave</button>
+        </form>
+
+        <!-- Attendance form -->
+        <form id="attendanceForm">
+            <h2>Mark Attendance</h2>
+            <button type="button" onclick="markAttendance()">Submit Attendance</button>
+        </form>
+
+        <div id="availabilityResult"></div>
+    </div>
+
+    <!-- JavaScript dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize Owl Carousel
+        $(document).ready(function() {
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                items: 1
+            });
+        });
+
+        // Function to toggle form visibility
+        function toggleForm(formId) {
+            // Hide the carousel
+            const carousel = document.getElementById('carousel');
+            carousel.style.display = 'none';
+
+            // Hide all forms
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => form.style.display = 'none');
+
+            // Show the selected form
+            document.getElementById(formId).style.display = 'block';
+        }
+
+        // Function to toggle calendar visibility
+        function toggleCalendar() {
+            // Hide the carousel
+            const carousel = document.getElementById('carousel');
+            carousel.style.display = 'none';
+
+            const calendarEl = document.getElementById('calendar');
+            if (calendarEl.style.display === 'none' || !calendarEl.style.display) {
+                calendarEl.style.display = 'block';
+                if (!calendar) {
+                    initCalendar();
+                }
+            } else {
+                calendarEl.style.display = 'none';
+            }
+        }
+
+        let calendar;
+
+        // Initialize FullCalendar
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: []
+            });
+
+            const collegeLeaves = [
+                { title: 'College Leave', start: '2024-04-15', end: '2024-04-17' },
+                { title: 'College Leave', start: '2024-05-01' }
+            ];
+
+            collegeLeaves.forEach(event => calendar.addEvent(event));
+            calendar.render();
+        }
+
+        // Submit leave and add event to the calendar
+        function submitLeave() {
+            const leaveStart = document.getElementById('leaveStart').value;
+            const leaveEnd = document.getElementById('leaveEnd').value;
+            const eventTitle = 'Leave';
+
+            const event = {
+                title: eventTitle,
+                start: leaveStart,
+                end: leaveEnd
+            };
+
+            calendar.addEvent(event);
+            document.getElementById('leaveForm').reset();
+            document.getElementById('leaveForm').style.display = 'none';
+        }
+
+        // Delete leave from the calendar
+        function deleteLeave() {
+            const leaveStart = document.getElementById('deleteLeaveStart').value;
+            const leaveEnd = document.getElementById('deleteLeaveEnd').value;
+
+            const events = calendar.getEvents().filter(event => {
+                const eventStart = event.startStr;
+                const eventEnd = event.endStr ? event.endStr : event.startStr;
+                return eventStart === leaveStart && eventEnd === leaveEnd && event.title === 'Leave';
+            });
+
+            if (events.length > 0) {
+                events.forEach(event => event.remove());
+                alert('Leave has been deleted.');
+            } else {
+                alert('Leave not found for the given date range.');
+            }
+
+            document.getElementById('leaveForm').reset();
+        }
+
+        // Submit food rating
+        // Submit food rating
+function submitFoodRating() {
+    const ratingDate = document.getElementById('ratingDate').value; // Get the selected date
+    const foodRating = document.getElementById('foodRating').value;
+    const comments = document.getElementById('comments').value;
+    alert(`Thank you for your rating!\nDate: ${ratingDate}\nRating: ${foodRating}\nComments: ${comments}`);
+    document.getElementById('foodRatingForm').reset();
+    document.getElementById('foodRatingForm').style.display = 'none';
+}
+
+        // Check room availability
+        function checkRoomAvailability() {
+            const checkInDate = document.getElementById('checkInDate').value;
+            const checkOutDate = document.getElementById('checkOutDate').value;
+            const resultMessage = `Rooms are available from ${checkInDate} to ${checkOutDate}.`;
+            document.getElementById('availabilityResult').innerHTML = resultMessage;
+            document.getElementById('availabilityForm').reset();
+            document.getElementById('availabilityForm').style.display = 'none';
+        }
+
+        // Check menu
+        function checkMenu() {
+            const menuDate = document.getElementById('menuDate').value;
+            const resultMessage = `Menu for ${menuDate}:\n1. Breakfast: Idli\n2. Lunch: Meals\n3. Dinner: Semiya`;
+            alert(resultMessage);
+            document.getElementById('menuForm').reset();
+            document.getElementById('menuForm').style.display = 'none';
+        }
+
+        // Check fees
+        function checkFees() {
+            const outcomes = [
+                'You have an outstanding balance of ₹50.',
+                'All fees have been paid.',
+                'You have a payment due of ₹30 for the last month.',
+                'No fees due at the moment.'
+            ];
+            const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+            alert(randomOutcome);
+            document.getElementById('feePortalForm').style.display = 'none';
+        }
+
+        // Check billing and fee reminder
+        function checkBilling() {
+            const outcomes = [
+                'Your next payment is due in 5 days.',
+                'All fees paid. No billing issues.',
+                'You have an overdue bill of ₹75.',
+                'Billing and fee reminder: No current issues.'
+            ];
+            const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+            alert(randomOutcome);
+            document.getElementById('billingForm').style.display = 'none';
+        }
+
+        // Mark attendance
+        function markAttendance() {
+            window.location.href = "attendance.html";
+        }
+
+        function submitCleaningRequest() {
+    const roomNumber = document.getElementById('roomNumber').value;
+    const rollNumber = document.getElementById('rollNumber').value;
+    const studentName = document.getElementById('studentName').value;
+
+    // Save the cleaning request to localStorage
+    const cleaningRequests = JSON.parse(localStorage.getItem("cleaningRequests")) || [];
+    cleaningRequests.push({ roomNumber, rollNumber, studentName });
+    localStorage.setItem("cleaningRequests", JSON.stringify(cleaningRequests));
+
+    // Show a popup message for successful submission
+    alert("Cleaning request submitted successfully!");
+
+    // Reset the form fields
+    document.getElementById('roomNumber').value = '';
+    document.getElementById('rollNumber').value = '';
+    document.getElementById('studentName').value = '';
+}
+
+
+
+
+    </script>
+</body>
+
+</html>
